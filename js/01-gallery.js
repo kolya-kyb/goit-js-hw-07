@@ -1,8 +1,19 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
-const instance = basicLightbox.create(`
+const instance = basicLightbox.create(
+  `
     <img src="">
-`);
+`,
+  {
+    onShow: () => {
+      document.addEventListener("keydown", closeModal);
+    },
+
+    onClose: () => {
+      document.removeEventListener("keydown", closeModal);
+    },
+  }
+);
 
 const getElementGallery = ({ preview, original, description }) =>
   `<div class="gallery__item">
@@ -26,23 +37,21 @@ const render = () => {
 };
 render();
 
-const openModal = (e) => {
+function openModal(e) {
   refs.modalImg.src = e.target.dataset.source;
   instance.show();
-};
+}
 
-const closeModal = (e) => {
+function closeModal(e) {
   if (e.code !== "Escape") {
     return;
   }
   instance.close();
-  document.removeEventListener("keydown", closeModal);
-};
+}
 refs.gallery.addEventListener("click", (e) => {
   if (e.target === e.currentTarget) {
     return;
   }
   e.preventDefault();
   openModal(e);
-  document.addEventListener("keydown", closeModal);
 });
